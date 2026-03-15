@@ -1,0 +1,20 @@
+# Build artifacts
+filter_nodes
+filter_nodes.exe
+rlp_discv4_nodes
+rlp_discv4_nodes.exe
+
+# Test / temporary files
+*.tmp
+*.test
+
+# Editor / OS files
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Go workspace file (optional, only if using go workspaces)
+go.work
+go.work.sum

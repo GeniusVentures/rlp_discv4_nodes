@@ -1,0 +1,53 @@
+name: Update Bootstrap Node Lists
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - 'chains_config.json'
+      - 'main.go'
+      - 'go.mod'
+      - 'go.sum'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    name: Download & filter discv4 node lists
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build filter tool
+        run: go build -o filter_nodes .
+
+      - name: Run filter (download latest all.json and write output/)
+        run: ./filter_nodes -config chains_config.json
+
+      - name: Run discovery summary
+        run: ./filter_nodes -config chains_config.json -discover 2>/dev/null || true
+
+      - name: Commit and push updated node lists
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add output/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update bootstrap node lists [skip ci]"
+            git push
+          fi

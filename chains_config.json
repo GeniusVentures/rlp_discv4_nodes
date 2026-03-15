@@ -1,0 +1,72 @@
+{
+  "allJsonURL": "https://raw.githubusercontent.com/ethereum/discv4-dns-lists/master/all.json",
+  "outputDir": "output",
+  "defaultTopN": 100,
+  "chains": [
+    {
+      "name": "ethereum-mainnet",
+      "chainId": 1,
+      "description": "Ethereum Mainnet",
+      "filterType": "geth_network",
+      "network": "mainnet",
+      "topN": 100
+    },
+    {
+      "name": "ethereum-sepolia",
+      "chainId": 11155111,
+      "description": "Ethereum Sepolia Testnet",
+      "filterType": "geth_network",
+      "network": "sepolia",
+      "topN": 100
+    },
+    {
+      "name": "ethereum-holesky",
+      "chainId": 17000,
+      "description": "Ethereum Holesky Testnet",
+      "filterType": "geth_network",
+      "network": "holesky",
+      "topN": 100
+    },
+    {
+      "name": "ethereum-hoodi",
+      "chainId": 560048,
+      "description": "Ethereum Hoodi Testnet",
+      "filterType": "geth_network",
+      "network": "hoodi",
+      "topN": 100
+    },
+    {
+      "name": "bnb-smart-chain",
+      "chainId": 56,
+      "description": "BNB Smart Chain (BSC) Mainnet — identified by the 'bsc' ENR field",
+      "filterType": "enr_field",
+      "enrField": "bsc",
+      "topN": 100
+    },
+    {
+      "name": "polygon-mainnet",
+      "chainId": 137,
+      "description": "Polygon PoS Mainnet — fork hashes computed from bor ChainConfig; update forkHashes by running -discover after each bor upgrade",
+      "filterType": "fork_hash_list",
+      "forkHashes": [
+        "3884b734",
+        "afc3c0f4",
+        "164d5593",
+        "692e139b"
+      ],
+      "topN": 100
+    },
+    {
+      "name": "gnosis-chain",
+      "chainId": 100,
+      "description": "Gnosis Chain (xDai) — update forkHashes by running -discover and cross-referencing with https://docs.gnosischain.com",
+      "filterType": "fork_hash_list",
+      "forkHashes": [
+        "f64909b1",
+        "936bd6d8",
+        "a44ec702"
+      ],
+      "topN": 100
+    }
+  ]
+}
