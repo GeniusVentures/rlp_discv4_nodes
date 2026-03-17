@@ -98,3 +98,32 @@ jobs:
             git commit -m "chore: update bootstrap node lists [skip ci]"
             git push
           fi
+
+      - name: Upload chain_enodes.json to Cloudflare R2
+        if: steps.check.outputs.changed == 'true'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
+        run: |
+          pip install boto3==1.26.137
+          python3 << 'EOF'
+          import boto3
+          import os
+
+          s3 = boto3.client(
+              service_name='s3',
+              endpoint_url=f'https://{os.getenv("ACCOUNT_ID")}.r2.cloudflarestorage.com',
+              aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+              aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+              region_name='auto',
+          )
+
+          s3.upload_file(
+              'output/chain_enodes.json',
+              'gnus.ai',
+              'chain_enodes.json',
+              ExtraArgs={'ContentType': 'application/json'},
+          )
+          print("Upload complete!")
+          EOF

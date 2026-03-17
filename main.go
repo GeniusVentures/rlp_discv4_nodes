@@ -160,14 +160,26 @@ func main() {
 		log.Fatalf("mkdir %s: %v", outDir, err)
 	}
 
+	chainEnodes := make(map[string][]OutputNode)
 	for _, chain := range cfg.Chains {
 		topN := chain.TopN
 		if topN <= 0 {
 			topN = defaultTopN
 		}
-		if err := processChain(chain, allNodes, outDir, topN); err != nil {
+		nodes, err := processChain(chain, allNodes, outDir, topN)
+		if err != nil {
 			log.Printf("ERROR processing chain %s: %v", chain.Name, err)
+			continue
 		}
+		if nodes == nil {
+			nodes = []OutputNode{}
+		}
+		chainEnodes[chain.Name] = nodes
+	}
+
+	// Write the combined chain_enodes.json file.
+	if err := writeChainEnodes(outDir, chainEnodes); err != nil {
+		log.Fatalf("write chain_enodes.json: %v", err)
 	}
 }
 
@@ -284,10 +296,10 @@ func printDiscovery(allNodes map[string]NodeRecord) {
 // Core pipeline
 // ---------------------------------------------------------------------------
 
-func processChain(chain ChainConfig, allNodes map[string]NodeRecord, outputDir string, topN int) error {
+func processChain(chain ChainConfig, allNodes map[string]NodeRecord, outputDir string, topN int) ([]OutputNode, error) {
 	filter, err := buildFilter(chain)
 	if err != nil {
-		return fmt.Errorf("build filter: %w", err)
+		return nil, fmt.Errorf("build filter: %w", err)
 	}
 
 	// Step 1: collect matching candidates.
@@ -312,7 +324,7 @@ func processChain(chain ChainConfig, allNodes map[string]NodeRecord, outputDir s
 
 	if len(candidates) == 0 {
 		log.Printf("[%s] No matching nodes found", chain.Name)
-		return nil
+		return nil, nil
 	}
 	log.Printf("[%s] Matched %d nodes (all fork versions)", chain.Name, len(candidates))
 
@@ -354,6 +366,25 @@ func processChain(chain ChainConfig, allNodes map[string]NodeRecord, outputDir s
 	tmpPath := outPath + ".tmp"
 	data, err := json.MarshalIndent(output, "", "  ")
 	if err != nil {
+		return nil, fmt.Errorf("marshal: %w", err)
+	}
+	if err := os.WriteFile(tmpPath, data, 0o644); err != nil {
+		return nil, fmt.Errorf("write tmp: %w", err)
+	}
+	if err := os.Rename(tmpPath, outPath); err != nil {
+		return nil, fmt.Errorf("rename: %w", err)
+	}
+	log.Printf("[%s] Wrote %d nodes → %s", chain.Name, len(output), outPath)
+	return output, nil
+}
+
+// writeChainEnodes writes a combined chain_enodes.json file mapping each chain
+// name to its list of enode records into outputDir.
+func writeChainEnodes(outputDir string, chainEnodes map[string][]OutputNode) error {
+	outPath := filepath.Join(outputDir, "chain_enodes.json")
+	tmpPath := outPath + ".tmp"
+	data, err := json.MarshalIndent(chainEnodes, "", "  ")
+	if err != nil {
 		return fmt.Errorf("marshal: %w", err)
 	}
 	if err := os.WriteFile(tmpPath, data, 0o644); err != nil {
@@ -362,7 +393,7 @@ func processChain(chain ChainConfig, allNodes map[string]NodeRecord, outputDir s
 	if err := os.Rename(tmpPath, outPath); err != nil {
 		return fmt.Errorf("rename: %w", err)
 	}
-	log.Printf("[%s] Wrote %d nodes → %s", chain.Name, len(output), outPath)
+	log.Printf("Wrote combined chain_enodes.json → %s", outPath)
 	return nil
 }
 
