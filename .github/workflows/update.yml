@@ -99,7 +99,7 @@ jobs:
             git push
           fi
 
-      - name: Upload chain_enodes.json to Cloudflare R2
+      - name: Upload chain_enodes.gz to Cloudflare R2
         if: steps.check.outputs.changed == 'true'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
@@ -109,7 +109,11 @@ jobs:
           pip install boto3==1.26.137
           python3 << 'EOF'
           import boto3
+          import gzip
           import os
+
+          with open('output/chain_enodes.json', 'rb') as f:
+              compressed = gzip.compress(f.read())
 
           s3 = boto3.client(
               service_name='s3',
@@ -119,11 +123,12 @@ jobs:
               region_name='auto',
           )
 
-          s3.upload_file(
-              'output/chain_enodes.json',
-              'gnus.ai',
-              'chain_enodes.json',
-              ExtraArgs={'ContentType': 'application/json'},
+          s3.put_object(
+              Bucket='gnus.ai',
+              Key='chain_enodes.gz',
+              Body=compressed,
+              ContentType='application/json',
+              ContentEncoding='gzip',
           )
           print("Upload complete!")
           EOF
