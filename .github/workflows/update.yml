@@ -32,12 +32,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: go.mod
-          cache: true
-
       - name: Check if all.json has been updated (via GitHub API)
         id: check
         env:
@@ -71,6 +65,13 @@ jobs:
             echo "changed=true"            >> "$GITHUB_OUTPUT"
             echo "new_commit=$LATEST_COMMIT" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Set up Go
+        if: steps.check.outputs.changed == 'true'
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
 
       - name: Build filter tool
         if: steps.check.outputs.changed == 'true'
