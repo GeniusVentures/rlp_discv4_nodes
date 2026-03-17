@@ -131,8 +131,8 @@ jobs:
 
       - name: Upload chain_enodes.gz to Cloudflare R2
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           ACCOUNT_ID: ${{ secrets.ACCOUNT_ID }}
         run: |
           pip install boto3==1.26.137
