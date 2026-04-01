@@ -1,9 +1,9 @@
 [
   {
-    "enr": "enr:-K-4QOlkgM4YGpLOV0oGJlcYQ05HwHxZfkt9N_PYujA2HCZcBZYLj0506RqcgEif_lpH6KCk6J4U8DQz3BtB6lHPVPcCg2V0aMrJhL4GpHeDAR2MgmlkgnY0gmlwhAAAAACDaXA2kCABQdAHAnoAAAAAAAAAAACJc2VjcDI1NmsxoQOZfwJ7MTTSjhb9kN7Y_Nflx6YKdaLbbk0JUexmQK1Q1YN0Y3CCdl-DdWRwgnZf",
-    "nodeId": "6dccb98e85bd19eff0e79a7921d276f1fa82607e551d4740068f09de180b4cb7",
+    "enr": "enr:-K-4QIjucvIggto2sG74Eyb6nQMTQdiafihaELLx36g1e_3OeuKxSdfxDvxS-U0EQQ9IR0630UJ_XLgJ7QPUJgTg0WMCg2V0aMrJhL4GpHeDAR2MgmlkgnY0gmlwhAAAAACDaXA2kCABQdAHAnoAAAAAAAAAAACJc2VjcDI1NmsxoQL54nyG0pVUUtpXsXdraEbVT5htsXH-4sapXv1ldd1Fx4N0Y3CCdl-DdWRwgnZf",
+    "nodeId": "63167e56b3c187823f791b7561aa8ba79e1dc195feb0dfc0ccf9724696309c58",
     "score": 1,
-    "lastResponse": "2026-03-20T02:16:52Z",
+    "lastResponse": "2026-03-31T22:45:09Z",
     "forkId": "be06a477",
     "forkNext": 73100,
     "ip": "2001:41d0:702:7a00::",
